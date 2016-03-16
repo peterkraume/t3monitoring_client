@@ -1,7 +1,7 @@
 <?php
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'Client Monitoring for TYPO3 installations',
+    'title' => 'Client extension for the t3monitoring service',
     'description' => '',
     'category' => 'plugin',
     'author' => 'Georg Ringer',
@@ -11,7 +11,7 @@ $EM_CONF[$_EXTKEY] = [
     'uploadfolder' => false,
     'createDirs' => '',
     'clearCacheOnLoad' => true,
-    'version' => '',
+    'version' => '0.0.1',
     'constraints' => [
         'depends' => [
             'typo3' => '6.2.0-7.6.99',
