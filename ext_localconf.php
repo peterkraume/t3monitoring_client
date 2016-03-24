@@ -15,3 +15,12 @@ if (\TYPO3\CMS\Core\Utility\GeneralUtility::compat_version('7.0')) {
 } else {
     $GLOBALS['TYPO3_CONF_VARS']['EXT']['t3monitoring_client']['provider'][] = 'T3Monitor\\T3monitoringClient\\Provider\\Extension6xProvider';
 }
+
+/** @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher */
+$signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+$signalSlotDispatcher->connect(
+    'TYPO3\\CMS\\Extensionmanager\\Utility\\InstallUtility',
+    'afterExtensionInstall',
+    'T3Monitor\\T3monitoringClient\\Slots\\ExtensionManagerSlot',
+    'afterExtensionInstall'
+);
