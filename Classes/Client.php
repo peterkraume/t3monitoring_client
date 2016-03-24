@@ -1,14 +1,6 @@
 <?php
 
-namespace T3Monitor\T3monitoringClient;
-
-use Exception;
-use T3Monitor\T3monitoringClient\Client as ClientService;
-use T3Monitor\T3monitoringClient\Provider\DataProviderInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\HttpUtility;
-
-class Client
+class T3Monitor_T3monitoringClient_Client
 {
 
     /**
@@ -17,7 +9,7 @@ class Client
     public function run()
     {
         if (!$this->checkAccess()) {
-            HttpUtility::setResponseCodeAndExit(HttpUtility::HTTP_STATUS_403);
+            die;
         }
 
         $data = $this->collectData();
@@ -40,8 +32,8 @@ class Client
 
             foreach ($classes as $class) {
                 /** @var DataProviderInterface $call */
-                $call = GeneralUtility::makeInstance($class);
-                if (!$call instanceof DataProviderInterface) {
+                $call = t3lib_div::makeInstance($class);
+                if (!$call instanceof T3Monitor_T3monitoringClient_Provider_DataProviderInterface) {
                     $data['error'] = sprintf('The class "%s" does not implements "%s"!', $call, $class);
                     return $data;
                 }
@@ -63,7 +55,7 @@ class Client
         try {
             // secret
             if (isset($settings['secret']) && !empty($settings['secret']) && strlen($settings['secret']) >= 5) {
-                $secret = GeneralUtility::_GET('secret');
+                $secret = t3lib_div::_GET('secret');
                 if ($secret !== $settings['secret']) {
                     throw new Exception(sprintf('Secret wrong, provided was "%s"', $secret));
                 }
@@ -74,8 +66,8 @@ class Client
             if (!isset($settings['allowedIps']) || empty($settings['allowedIps'])) {
                 throw new Exception('No allowed ips defined');
             }
-            $remoteIp = GeneralUtility::getIndpEnv('REMOTE_ADDR');
-            if (!GeneralUtility::cmpIP($remoteIp, $settings['allowedIps'])) {
+            $remoteIp = t3lib_div::getIndpEnv('REMOTE_ADDR');
+            if (!t3lib_div::cmpIP($remoteIp, $settings['allowedIps'])) {
                 throw new Exception(sprintf('IP comparison failed, remote IP: %s!', $remoteIp));
             }
         } catch (Exception $e) {
@@ -90,6 +82,6 @@ class Client
 
 }
 
-/** @var ClientService $client */
-$client = GeneralUtility::makeInstance('T3Monitor\\T3monitoringClient\\Client');
+/** @var T3Monitor_T3monitoringClient_Client $client */
+$client = t3lib_div::makeInstance('T3Monitor_T3monitoringClient_Client');
 $client->run();

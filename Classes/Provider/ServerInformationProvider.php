@@ -1,7 +1,5 @@
 <?php
 
-namespace T3Monitor\T3monitoringClient\Provider;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,26 +13,15 @@ namespace T3Monitor\T3monitoringClient\Provider;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Database\DatabaseConnection;
-
-class ServerInformationProvider implements DataProviderInterface
+class T3Monitor_T3monitoringClient_Provider_ServerInformationProvider implements T3Monitor_T3monitoringClient_Provider_DataProviderInterface
 {
 
     public function get(array $data)
     {
         $data['core']['typo3Version'] = TYPO3_version;
         $data['core']['phpVersion'] = substr(phpversion(), 0, strpos(phpversion() . '-', '-'));
-        $data['core']['mysqlClientVersion'] = mysqli_get_client_version($this->getDatabaseConnection()->getDatabaseHandle());
+        $data['core']['mysqlClientVersion'] = '';
 
         return $data;
     }
-
-    /**
-     * @return DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
 }

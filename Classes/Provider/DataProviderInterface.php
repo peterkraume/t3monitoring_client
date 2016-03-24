@@ -1,7 +1,5 @@
 <?php
 
-namespace T3Monitor\T3monitoringClient\Provider;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,7 +13,7 @@ namespace T3Monitor\T3monitoringClient\Provider;
  * The TYPO3 project - inspiring people to share!
  */
 
-interface DataProviderInterface
+interface T3Monitor_T3monitoringClient_Provider_DataProviderInterface
 {
 
     /**
