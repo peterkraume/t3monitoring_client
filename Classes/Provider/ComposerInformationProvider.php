@@ -22,7 +22,7 @@ class ComposerInformationProvider implements DataProviderInterface
 
     public function get(array $data)
     {
-        $data['core']['composerUsage'] = (int)Bootstrap::usesComposerClassLoading();
+        $data['extra']['info']['Composer Usage'] = Bootstrap::usesComposerClassLoading() ? 'yes' : 'no';
 
         return $data;
     }
