@@ -80,7 +80,8 @@ class Client
             }
         } catch (Exception $e) {
             if (isset($settings['enableDebugForErrors']) && (int)$settings['enableDebugForErrors'] === 1) {
-                die('ERROR: ' . $e->getMessage());
+                echo('ERROR: ' . htmlspecialchars($e->getMessage()));
+                HttpUtility::setResponseCode(HttpUtility::HTTP_STATUS_403);
             }
             return false;
         }
