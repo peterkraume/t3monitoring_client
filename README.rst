@@ -5,7 +5,7 @@ This extensions provides a client for the the extension **t3monitoring**.
 **Requirements**
 
 - TYPO3 CMS 6.2 LTS or 7 LTS
-- Use the branch ```4-5``` for support from 4.5 - 6.1
+- Use the branch ``4-5`` for support from 4.5 - 6.1
 
 **Sponsors**
 
