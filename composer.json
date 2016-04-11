@@ -1,5 +1,5 @@
 {
-  "name": "georgringer/t3monitoring_client",
+  "name": "t3monitor/t3monitoring_client",
   "type": "typo3-cms-extension",
   "description": "Client extension for the t3monitoring service",
   "license": [
