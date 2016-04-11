@@ -2,6 +2,13 @@
 
 namespace T3Monitor\T3monitoringClient;
 
+/*
+ * This file is part of the t3monitoring_client extension for TYPO3 CMS.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
 use Exception;
 use T3Monitor\T3monitoringClient\Client as ClientService;
 use T3Monitor\T3monitoringClient\Provider\DataProviderInterface;
