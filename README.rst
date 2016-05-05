@@ -13,7 +13,7 @@ This extensions provides a client for the the extension **t3monitoring**.
 
 **Important**
 
-This extension is still alpha and things might change!
+This extension is still beta and things might change!
 
 Configuration
 -------------
