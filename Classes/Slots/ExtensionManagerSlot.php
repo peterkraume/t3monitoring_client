@@ -22,15 +22,13 @@ class ExtensionManagerSlot
     public function afterExtensionInstall($extensionKey)
     {
         if ($extensionKey === 't3monitoring_client') {
-
-            $configuration = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['t3monitoring_client'];
-            if (!isset($configuration)) {
+            if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['t3monitoring_client'])) {
                 $configuration = [];
             } else {
-                $configuration = unserialize($configuration);
+                $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['t3monitoring_client']);
             }
 
-            if (!isset($configuration['secret']) || !empty($configuration['secret'])) {
+            if (empty($configuration['secret'])) {
                 $configuration['secret'] = GeneralUtility::getRandomHexString(self::SECRET_LENGTH);
                 /** @var $configurationManager ConfigurationManager */
                 $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
