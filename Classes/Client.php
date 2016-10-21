@@ -26,12 +26,23 @@ class Client
      */
     public function run()
     {
+        $settings = (array)unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['t3monitoring_client']);
+
         if (!$this->checkAccess()) {
             HttpUtility::setResponseCodeAndExit(HttpUtility::HTTP_STATUS_403);
         }
 
         $data = $this->collectData();
-        echo json_encode($data);
+
+        // Generate json
+        if($output = json_encode($data)){
+            echo $output;
+        }else{
+            if (isset($settings['enableDebugForErrors']) && (int)$settings['enableDebugForErrors'] === 1) {
+                echo 'ERROR: Problems while encoding Json';
+            }
+            HttpUtility::setResponseCodeAndExit(HttpUtility::HTTP_STATUS_403);
+        }
     }
 
     /**
