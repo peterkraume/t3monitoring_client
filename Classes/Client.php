@@ -71,7 +71,7 @@ class Client
      */
     protected function collectData()
     {
-        $data = [];
+        $data = array();
         $classes = (array)$GLOBALS['TYPO3_CONF_VARS']['EXT']['t3monitoring_client']['provider'];
 
         if (empty($classes)) {
