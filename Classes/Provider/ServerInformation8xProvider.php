@@ -1,0 +1,37 @@
+<?php
+
+namespace T3Monitor\T3monitoringClient\Provider;
+
+/*
+ * This file is part of the t3monitoring_client extension for TYPO3 CMS.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+
+/**
+ * Class ServerInformationProvider
+ */
+class ServerInformation8xProvider implements DataProviderInterface
+{
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function get(array $data)
+    {
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $data['core']['typo3Version'] = TYPO3_version;
+        $data['core']['phpVersion'] = substr(phpversion(), 0, strpos(phpversion() . '-', '-'));
+        $data['core']['mysqlClientVersion'] = $connection->getServerVersion();
+        $data['core']['diskTotalSpace'] = disk_total_space(PATH_site);
+        $data['core']['diskFreeSpace'] = disk_free_space(PATH_site);
+
+        return $data;
+    }
+}
