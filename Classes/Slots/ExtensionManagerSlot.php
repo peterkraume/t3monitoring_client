@@ -31,13 +31,24 @@ class ExtensionManagerSlot
             }
 
             if (empty($configuration['secret'])) {
-                $configuration['secret'] = GeneralUtility::getRandomHexString(self::SECRET_LENGTH);
-                /** @var $configurationManager ConfigurationManager */
-                $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-                $configurationManager->setLocalConfigurationValueByPath(
-                    'EXT/extConf/' . $extensionKey,
-                    serialize($configuration)
-                );
+                if (class_exists('TYPO3\\CMS\\Core\\Crypto\\Random')) {
+                    $secret = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Crypto\\Random')->generateRandomHexString(self::SECRET_LENGTH);
+                } else {
+                    $secret = GeneralUtility::getRandomHexString(self::SECRET_LENGTH);
+                }
+                $configuration['secret'] = $secret;
+
+                if (class_exists('TYPO3\\CMS\\Core\\Configuration\\ExtensionConfiguration')) {
+                    // TYPO3 v9
+                    GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Configuration\\ExtensionConfiguration')->set($extensionKey, '', $configuration);
+                } else {
+                    /** @var $configurationManager ConfigurationManager */
+                    $configurationManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Configuration\\ConfigurationManager');
+                    $configurationManager->setLocalConfigurationValueByPath(
+                        'EXT/extConf/' . $extensionKey,
+                        serialize($configuration)
+                    );
+                }
             }
         }
     }
