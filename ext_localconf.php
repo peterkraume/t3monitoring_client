@@ -5,12 +5,11 @@ $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['t3monitoring'] = 'EXT:t3monito
 
 $GLOBALS['TYPO3_CONF_VARS']['EXT']['t3monitoring_client']['provider'][] = 'T3Monitor\\T3monitoringClient\\Provider\\StatusReportProvider';
 
-if (class_exists('TYPO3\\CMS\\Core\\Utility\\VersionNumberUtility')) {
-    // TYPO3 v9
+if (version_compare(TYPO3_branch, '9.0', '>=')) {
     $version = 9;
-} elseif (\TYPO3\CMS\Core\Utility\GeneralUtility::compat_version('8.0')) {
+} elseif (version_compare(TYPO3_branch, '8.0', '>=')) {
     $version = 8;
-} elseif (\TYPO3\CMS\Core\Utility\GeneralUtility::compat_version('7.0')) {
+} elseif (version_compare(TYPO3_branch, '7.0', '>=')) {
     $version = 7;
 } else {
     $version = 6;
