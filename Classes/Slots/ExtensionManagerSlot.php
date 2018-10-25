@@ -31,11 +31,7 @@ class ExtensionManagerSlot
             }
 
             if (empty($configuration['secret'])) {
-                if (class_exists('TYPO3\\CMS\\Core\\Crypto\\Random')) {
-                    $secret = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Crypto\\Random')->generateRandomHexString(self::SECRET_LENGTH);
-                } else {
-                    $secret = GeneralUtility::getRandomHexString(self::SECRET_LENGTH);
-                }
+                $secret = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Crypto\\Random')->generateRandomHexString(self::SECRET_LENGTH);
                 $configuration['secret'] = $secret;
 
                 if (class_exists('TYPO3\\CMS\\Core\\Configuration\\ExtensionConfiguration')) {
