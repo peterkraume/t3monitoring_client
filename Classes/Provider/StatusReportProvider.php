@@ -1,4 +1,5 @@
 <?php
+
 namespace T3Monitor\T3monitoringClient\Provider;
 
 /*
@@ -8,8 +9,12 @@ namespace T3Monitor\T3monitoringClient\Provider;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Report\InstallStatusReport;
+use TYPO3\CMS\Install\Report\SecurityStatusReport;
+use TYPO3\CMS\Reports\Report\Status as Stati;
 use TYPO3\CMS\Reports\Status;
 
 /**
@@ -26,17 +31,16 @@ class StatusReportProvider implements DataProviderInterface
     {
         if (ExtensionManagementUtility::isLoaded('reports')) {
             $this->initialize();
-            /** @var $statusReport \TYPO3\CMS\Reports\Report\Status\Status */
-            $statusReport = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Report\\Status\\Status');
+            $statusReport = GeneralUtility::makeInstance(\TYPO3\CMS\Reports\Report\Status\Status::class);
             $statusCollection = $statusReport->getSystemStatus();
 
-            $severityConversion = array(
+            $severityConversion = [
                 Status::INFO => 'info',
                 Status::WARNING => 'warning',
                 Status::ERROR => 'danger',
-            );
+            ];
             foreach ($statusCollection as $statusProvider => $providerStatuses) {
-                /** @var $status \TYPO3\CMS\Reports\Status */
+                /** @var $status Status */
                 foreach ($providerStatuses as $status) {
                     if ($status->getSeverity() > Status::OK) {
                         $title = sprintf('%s - %s', $status->getTitle(), $status->getValue());
@@ -59,29 +63,24 @@ class StatusReportProvider implements DataProviderInterface
     {
         $this->getLanguageService()->init('en');
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status'])) {
-            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status'] = array();
+            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status'] = [];
         }
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['typo3'][] = 'TYPO3\\CMS\\Reports\\Report\\Status\\Typo3Status';
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['system'][] = 'TYPO3\\CMS\\Reports\\Report\\Status\\SystemStatus';
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['security'][] = 'TYPO3\\CMS\\Reports\\Report\\Status\\SecurityStatus';
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['configuration'][] = 'TYPO3\\CMS\\Reports\\Report\\Status\\ConfigurationStatus';
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['fal'][] = 'TYPO3\\CMS\\Reports\\Report\\Status\\FalStatus';
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['typo3'][] = 'TYPO3\\CMS\\Install\\Report\\InstallStatusReport';
-        if (!method_exists('TYPO3\\CMS\\Core\\Utility\\GeneralUtility', 'compat_version') || GeneralUtility::compat_version('7.0')) {
-            // TYPO3 v7, v8 or v9
-            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['security'][] = 'TYPO3\\CMS\\Install\\Report\\SecurityStatusReport';
-        }
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['typo3'][] = Stati\Typo3Status::class;
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['system'][] = Stati\SystemStatus::class;
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['security'][] = Stati\SecurityStatus::class;
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['configuration'][] = Stati\ConfigurationStatus::class;
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['fal'][] = Stati\FalStatus::class;
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['typo3'][] = InstallStatusReport::class;
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['security'][] = SecurityStatusReport::class;
     }
 
     /**
-     * Returns LanguageService
-     *
      * @return \TYPO3\CMS\Lang\LanguageService
      */
-    protected function getLanguageService()
+    protected function getLanguageService(): LanguageService
     {
         if ($GLOBALS['LANG'] === null) {
-            $GLOBALS['LANG'] = GeneralUtility::makeInstance('TYPO3\\CMS\\Lang\\LanguageService');
+            $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
         }
         return $GLOBALS['LANG'];
     }

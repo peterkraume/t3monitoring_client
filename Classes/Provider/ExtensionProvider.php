@@ -1,4 +1,5 @@
 <?php
+
 namespace T3Monitor\T3monitoringClient\Provider;
 
 /*
@@ -15,9 +16,9 @@ use TYPO3\CMS\Extensionmanager\Utility\EmConfUtility;
 use TYPO3\CMS\Extensionmanager\Utility\ListUtility;
 
 /**
- * Class Extension6xProvider
+ * Class Extension7xProvider
  */
-class Extension6xProvider implements DataProviderInterface
+class ExtensionProvider implements DataProviderInterface
 {
 
     /**
@@ -27,18 +28,12 @@ class Extension6xProvider implements DataProviderInterface
      */
     public function get(array $data)
     {
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance('TYPO3\\CMS\\Lang\\LanguageService');
-        $GLOBALS['LANG']->init('default');
-
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var ListUtility $listUtility */
-        $listUtility = $objectManager->get('TYPO3\\CMS\\Extensionmanager\\Utility\\ListUtility');
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $listUtility = $objectManager->get(ListUtility::class);
 
         $allExtensions = $listUtility->getAvailableExtensions();
 
-        /** @var EmConfUtility $emConfUtility */
-        $emConfUtility = GeneralUtility::makeInstance('TYPO3\\CMS\\Extensionmanager\\Utility\\EmConfUtility');
+        $emConfUtility = GeneralUtility::makeInstance(EmConfUtility::class);
         foreach ($allExtensions as $key => $f) {
             if (is_dir(PATH_site . 'typo3/sysext/' . $key . '/')) {
                 continue;

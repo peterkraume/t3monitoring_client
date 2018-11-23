@@ -1,4 +1,5 @@
 <?php
+
 namespace T3Monitor\T3monitoringClient\Provider;
 
 /*

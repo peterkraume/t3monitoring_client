@@ -10,10 +10,12 @@ namespace T3Monitor\T3monitoringClient;
  */
 
 use Exception;
-use T3Monitor\T3monitoringClient\Client as ClientService;
 use T3Monitor\T3monitoringClient\Provider\DataProviderInterface;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
+
+oviderInterface;
 
 /**
  * Class Client
@@ -27,7 +29,7 @@ class Client
      */
     public function run()
     {
-        $settings = (array)unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['t3monitoring_client']);
+        $settings = $this->getSettings();
 
         if (!$this->checkAccess()) {
             HttpUtility::setResponseCodeAndExit(HttpUtility::HTTP_STATUS_403);
@@ -72,7 +74,7 @@ class Client
      */
     protected function collectData()
     {
-        $data = array();
+        $data = [];
         $classes = (array)$GLOBALS['TYPO3_CONF_VARS']['EXT']['t3monitoring_client']['provider'];
 
         if (empty($classes)) {
@@ -97,9 +99,9 @@ class Client
      * @return bool
      * @throws \Exception
      */
-    protected function checkAccess()
+    protected function checkAccess(): bool
     {
-        $settings = (array)unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['t3monitoring_client']);
+        $settings = $this->getSettings();
 
         try {
             // secret
@@ -129,8 +131,20 @@ class Client
 
         return true;
     }
+
+    protected function getSettings(): array
+    {
+        $configuration = [];
+        try {
+            $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+            $configuration = $extensionConfiguration->get('t3monitoring_client');
+        } catch (\Exception $exception) {
+            // do nothing
+        }
+
+        return $configuration;
+    }
 }
 
-/** @var ClientService $client */
-$client = GeneralUtility::makeInstance('T3Monitor\\T3monitoringClient\\Client');
+$client = GeneralUtility::makeInstance(Client::class);
 $client->run();

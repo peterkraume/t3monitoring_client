@@ -1,6 +1,6 @@
 <?php
 
-$EM_CONF[$_EXTKEY] = array(
+$EM_CONF[$_EXTKEY] = [
     'title' => 'Client extension for the t3monitoring service',
     'description' => '',
     'category' => 'plugin',
@@ -12,11 +12,11 @@ $EM_CONF[$_EXTKEY] = array(
     'createDirs' => '',
     'clearCacheOnLoad' => true,
     'version' => '1.0.2',
-    'constraints' => array(
-        'depends' => array(
-            'typo3' => '6.2.0-9.3.99',
-        ),
-        'conflicts' => array(),
-        'suggests' => array(),
-    ),
-);
+    'constraints' => [
+        'depends' => [
+            'typo3' => '9.5.0-9.5.99',
+        ],
+        'conflicts' => [],
+        'suggests' => [],
+    ],
+];

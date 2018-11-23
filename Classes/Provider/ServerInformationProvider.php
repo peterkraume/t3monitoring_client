@@ -9,7 +9,9 @@ namespace T3Monitor\T3monitoringClient\Provider;
  * LICENSE.txt file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Class ServerInformationProvider
@@ -23,20 +25,13 @@ class ServerInformationProvider implements DataProviderInterface
      */
     public function get(array $data)
     {
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
         $data['core']['typo3Version'] = TYPO3_version;
         $data['core']['phpVersion'] = substr(phpversion(), 0, strpos(phpversion() . '-', '-'));
-        $data['core']['mysqlClientVersion'] = mysqli_get_client_version($this->getDatabaseConnection()->getDatabaseHandle());
+        $data['core']['mysqlClientVersion'] = $connection->getServerVersion();
         $data['core']['diskTotalSpace'] = disk_total_space(PATH_site);
         $data['core']['diskFreeSpace'] = disk_free_space(PATH_site);
 
         return $data;
-    }
-
-    /**
-     * @return DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 }
