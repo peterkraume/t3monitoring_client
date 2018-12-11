@@ -2,10 +2,7 @@
   "name": "t3monitor/t3monitoring_client",
   "type": "typo3-cms-extension",
   "description": "Client extension for the t3monitoring service",
-  "license": [
-    "GPL-2.0+"
-  ],
-  "version": "9.0.0",
+  "license": ["GPL-2.0-or-later"],
   "require": {
     "typo3/cms-core": "^9.5"
   },
