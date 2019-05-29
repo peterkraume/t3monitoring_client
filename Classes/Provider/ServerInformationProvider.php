@@ -31,7 +31,7 @@ class ServerInformationProvider implements DataProviderInterface
         $data['core']['mysqlClientVersion'] = $connection->getServerVersion();
         $data['core']['diskTotalSpace'] = disk_total_space(PATH_site);
         $data['core']['diskFreeSpace'] = disk_free_space(PATH_site);
-
+        $data['core']['applicationContext'] = (string)GeneralUtility::getApplicationContext();
         return $data;
     }
 }
