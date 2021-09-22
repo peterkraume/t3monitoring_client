@@ -30,7 +30,8 @@ class ExtensionProvider implements DataProviderInterface
      */
     public function get(array $data)
     {
-        $hasNewEmConfApi = VersionNumberUtility::convertVersionNumberToInteger('10.2') < VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch);
+        $isv11 = VersionNumberUtility::convertVersionNumberToInteger('11.2') < VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch);
+        $isv10 = VersionNumberUtility::convertVersionNumberToInteger('10.2') < VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch);
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $listUtility = $objectManager->get(ListUtility::class);
 
@@ -42,7 +43,14 @@ class ExtensionProvider implements DataProviderInterface
                 continue;
             }
 
-            $data['extensions'][$key] = $hasNewEmConfApi ? $emConfUtility->includeEmConf($key, $f['packagePath']) : $emConfUtility->includeEmConf($f['packagePath']);
+            if ($isv11) {
+                $data['extensions'][$key] = $emConfUtility->includeEmConf($key, $f['packagePath']);
+            } elseif ($isv10) {
+                $data['extensions'][$key] = $emConfUtility->includeEmConf($key, $f);
+            } else {
+                $data['extensions'][$key] = $emConfUtility->includeEmConf($f);
+            }
+
             $data['extensions'][$key]['isLoaded'] = (int)ExtensionManagementUtility::isLoaded($key);
         }
 
