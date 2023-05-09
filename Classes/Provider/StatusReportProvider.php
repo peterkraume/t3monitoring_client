@@ -9,7 +9,9 @@ namespace T3Monitor\T3monitoringClient\Provider;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Report\InstallStatusReport;
@@ -22,16 +24,18 @@ use TYPO3\CMS\Reports\Status;
  */
 class StatusReportProvider implements DataProviderInterface
 {
-
     /**
      * @param array $data
      * @return array
      */
     public function get(array $data)
     {
-        if (ExtensionManagementUtility::isLoaded('reports')) {
+        $version = new Typo3Version();
+        // todo: these checks fail with a type error on TYPO3 v12, disable them for now
+        if (ExtensionManagementUtility::isLoaded('reports') && $version->getMajorVersion() < 12) {
             $this->initialize();
             $statusReport = GeneralUtility::makeInstance(Stati\Status::class);
+
             $statusCollection = $statusReport->getSystemStatus();
 
             $severityConversion = [
@@ -56,8 +60,6 @@ class StatusReportProvider implements DataProviderInterface
 
     /**
      * Initialize some code which is usually only available in backend context
-     *
-     * @return void
      */
     protected function initialize()
     {
@@ -67,10 +69,10 @@ class StatusReportProvider implements DataProviderInterface
         }
 
         $skippedReports = [
-            InstallStatusReport::class
+            InstallStatusReport::class,
         ];
 
-        foreach($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers'] as $provider => $providerStati) {
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers'] as $provider => $providerStati) {
             $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers'][$provider] = array_diff($providerStati, $skippedReports);
         }
 
@@ -88,7 +90,7 @@ class StatusReportProvider implements DataProviderInterface
     protected function getLanguageService(): LanguageService
     {
         if (!isset($GLOBALS['LANG'])) {
-            $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
+            $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('en');
         }
         return $GLOBALS['LANG'];
     }
