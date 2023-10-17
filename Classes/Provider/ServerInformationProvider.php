@@ -24,12 +24,14 @@ class ServerInformationProvider implements DataProviderInterface
      */
     public function get(array $data)
     {
+        $disabledFunctions = GeneralUtility::trimExplode(',', (string)ini_get('disable_functions'), true);
+
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
         $data['core']['typo3Version'] = GeneralUtility::makeInstance(Typo3Version::class)->getVersion();
         $data['core']['phpVersion'] = substr(phpversion(), 0, strpos(phpversion() . '-', '-'));
         $data['core']['mysqlClientVersion'] = $connection->getServerVersion();
-        $data['core']['diskTotalSpace'] = disk_total_space(Environment::getProjectPath());
-        $data['core']['diskFreeSpace'] = disk_free_space(Environment::getProjectPath());
+        $data['core']['diskTotalSpace'] = in_array('disk_total_space', $disabledFunctions, true) ? 0 : disk_total_space(Environment::getProjectPath());
+        $data['core']['diskFreeSpace'] = in_array('disk_free_space', $disabledFunctions, true) ? 0 : disk_free_space(Environment::getProjectPath());
         $data['core']['applicationContext'] = (string)Environment::getContext();
         return $data;
     }
