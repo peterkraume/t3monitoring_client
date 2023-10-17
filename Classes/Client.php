@@ -73,7 +73,7 @@ class Client
     protected function utf8Converter(array $array)
     {
         array_walk_recursive($array, function (&$item) {
-            if (!mb_detect_encoding($item, 'utf-8', true)) {
+            if (!mb_detect_encoding((string)$item, 'utf-8', true)) {
                 $item = utf8_encode($item);
             }
         });
