@@ -32,6 +32,9 @@ class ExtensionProvider implements DataProviderInterface
         $emConfUtility = GeneralUtility::makeInstance(EmConfUtility::class);
         foreach ($allExtensions as $key => $f) {
             $extensionConfig = (array)$emConfUtility->includeEmConf($key, $f['packagePath']);
+            if (!array_filter($extensionConfig)) {
+                $extensionConfig = $f;
+            }
             if (($extensionConfig['type'] ?? '') === 'System' || ($extensionConfig['author'] ?? '') === 'TYPO3 Core Team') {
                 continue;
             }
